@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FileText, CheckCircle2, ShieldCheck, Zap, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, Zap, ArrowLeft } from 'lucide-react';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
