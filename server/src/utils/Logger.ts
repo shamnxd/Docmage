@@ -35,8 +35,8 @@ const transports: winston.transport[] = [
   new winston.transports.Console(),
 ];
 
-// Only add file logging in development mode
-if (env.NODE_ENV === 'development') {
+// Only add file logging in development mode and NOT on Vercel
+if (env.NODE_ENV === 'development' && !process.env.VERCEL) {
   transports.push(
     new winston.transports.File({
       filename: 'logs/error.log',
