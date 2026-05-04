@@ -54,7 +54,12 @@ class App {
     this.app.use(`${ROUTES.API_BASE}${ROUTES.PDF.BASE}`, pdfRoutes.router);
 
     this.app.get(ROUTES.HEALTH, (req, res) => {
-      res.status(200).json({ status: "UP" });
+      res.status(200).json({ 
+        status: "UP",
+        version: "1.0.0",
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+      });
     });
   }
 
