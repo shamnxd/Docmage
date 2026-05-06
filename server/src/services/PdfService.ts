@@ -70,7 +70,7 @@ export class PdfService {
     await this.pdfRepository.delete(pdfId);
   }
 
-  async extractPages(userId: string, pdfId: string, pageIndices: number[], newFileName: string): Promise<Buffer> {
+  async extractPages(userId: string, pdfId: string, pageIndices: number[], newFileName: string): Promise<IPdf> {
     const pdf = await this.pdfRepository.findById(pdfId);
     if (!pdf || pdf.userId !== userId) {
       throw AppError.notFound(ErrorMessages.FILE_NOT_FOUND);
@@ -90,15 +90,13 @@ export class PdfService {
       const finalName = newFileName.endsWith('.pdf') ? newFileName : `${newFileName}.pdf`;
       const storageKey = await this.fileStorageService.uploadBuffer(newBuffer, 'application/pdf', 'pdf');
 
-      await this.pdfRepository.create({
+      return await this.pdfRepository.create({
         userId,
         originalName: finalName,
         storageKey,
         size: newBuffer.length,
         pageCount: copiedPages.length,
       });
-
-      return newBuffer;
     } catch (error) {
       Logger.error(`[PdfService]: Extraction failed:`, error);
       if (error instanceof AppError) throw error;

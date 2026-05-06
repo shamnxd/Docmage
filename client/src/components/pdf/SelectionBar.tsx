@@ -53,7 +53,8 @@ const SelectionBar: React.FC = () => {
         .map(item => item.originalIndex - 1);
 
       // 3. Request extraction
-      await pdfService.extract(pdfId, pageIndicesToExtract, newFileName);
+      const extractionResult = await pdfService.extract(pdfId, pageIndicesToExtract, newFileName);
+      const newPdfId = extractionResult.data.id;
 
       toast.dismiss(loadingToast);
       toast.success('PDF extracted successfully!', { duration: 5000 });
@@ -64,6 +65,7 @@ const SelectionBar: React.FC = () => {
       dispatch(clearSelection());
       navigate('/success', { 
         state: { 
+          pdfId: newPdfId,
           fileName: newFileName.endsWith('.pdf') ? newFileName : `${newFileName}.pdf`
         } 
       });

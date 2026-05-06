@@ -73,11 +73,12 @@ export class PdfController {
         throw new AppError("New file name is required", HttpStatus.BAD_REQUEST);
       }
 
-      await this.pdfService.extractPages(req.user!.userId, id, pageIndices, newFileName);
+      const newPdf = await this.pdfService.extractPages(req.user!.userId, id, pageIndices, newFileName);
 
       res.status(HttpStatus.OK).json({
         status: 'success',
         message: 'PDF extracted and saved successfully',
+        data: PdfMapper.toResponseDTO(newPdf),
       });
     } catch (error) {
       next(error);
