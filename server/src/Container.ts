@@ -10,7 +10,6 @@ import { AuthMiddleware } from "./middlewares/AuthMiddleware.js";
 import { EmailService } from "./services/EmailService.js";
 import { env } from "./config/Env.js";
 
-// Shared Infrastructure
 const storageService = new S3StorageService(
   env.S3_REGION,
   env.S3_ACCESS_KEY,

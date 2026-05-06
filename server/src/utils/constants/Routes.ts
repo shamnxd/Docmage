@@ -19,5 +19,6 @@ export const ROUTES = {
     LIST: '/',
     EXTRACT: '/:id/extract',
     DELETE: '/:id',
+    DOWNLOAD: '/:id/download',
   },
 } as const;
