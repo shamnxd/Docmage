@@ -14,7 +14,7 @@ import { authService } from '../services/authService';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(1, 'Password is required'),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -25,27 +25,33 @@ const Login: React.FC = () => {
   const location = useLocation();
   const from = location.state?.from || '/dashboard';
   
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>({
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = async (data: LoginForm) => {
     try {
       const response = await authService.login(data);
-      // Assuming response.data contains { token, user }
       dispatch(setCredentials({ accessToken: response.accessToken, user: response.user }));
       navigate(from, { replace: true });
     } catch (error: any) {
       console.error('Login failed:', error);
-      const message = error.response?.data?.message;
+      const message = error.response?.data?.message || 'Login failed. Please check your credentials.';
       
       if (message === 'Account not verified. Please verify your email.') {
-        // Redirect to verify page if account is unverified
         navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`);
         return;
       }
       
-      toast.error(message || 'Login failed. Please check your credentials.');
+      // Map backend errors to fields
+      const lowerMessage = message.toLowerCase();
+      if (lowerMessage.includes('email') || lowerMessage.includes('user not found')) {
+        setError('email', { type: 'manual', message });
+      } else if (lowerMessage.includes('password') || lowerMessage.includes('credentials') || lowerMessage.includes('invalid')) {
+        setError('password', { type: 'manual', message });
+      } else {
+        setError('root', { type: 'manual', message });
+      }
     }
   };
 
@@ -103,6 +109,13 @@ const Login: React.FC = () => {
           </div>
           {errors.password && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.password.message}</p>}
         </div>
+
+        {errors.root && (
+          <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="w-1 h-1 rounded-full bg-red-500" />
+            <p className="text-[10px] font-bold text-red-500 leading-tight">{errors.root.message}</p>
+          </div>
+        )}
 
         <button 
           type="submit" 
