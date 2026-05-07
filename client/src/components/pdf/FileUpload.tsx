@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { Cloud, Plus } from 'lucide-react';
 import { useAppDispatch } from '../../store/hooks';
 import { setPdfFile, setGlobalFile } from '../../store/pdfSlice';
-import toast from 'react-hot-toast';
 
 const FileUpload: React.FC = () => {
   const dispatch = useAppDispatch();
