@@ -6,6 +6,7 @@ import { setCredentials } from '../store/authSlice';
 import { authService } from '../services/authService';
 import AuthLayout from '../components/auth/AuthLayout';
 import toast from 'react-hot-toast';
+import type { AxiosError } from 'axios';
 
 const VerifyOtp: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -65,8 +66,9 @@ const VerifyOtp: React.FC = () => {
       const response = await authService.verify({ email, otp: otpString });
       dispatch(setCredentials({ accessToken: response.accessToken, user: response.user }));
       navigate(from, { replace: true });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid verification code');
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<{ message: string }>;
+      setError(axiosError.response?.data?.message || 'Invalid verification code');
     } finally {
       setIsSubmitting(false);
     }
@@ -78,8 +80,9 @@ const VerifyOtp: React.FC = () => {
       await authService.resendOtp(email);
       setTimer(60);
       toast.success('Verification code resent!');
-    } catch (err: any) {
-      toast.error('Failed to resend code. Please try again.');
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || 'Failed to resend code. Please try again.');
     } finally {
       setIsResending(false);
     }

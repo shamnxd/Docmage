@@ -3,16 +3,12 @@ import { Link } from 'react-router-dom';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import toast from 'react-hot-toast';
 import AuthLayout from '../components/auth/AuthLayout';
 import { authService } from '../services/authService';
+import type { AxiosError } from 'axios';
 
-const forgotPasswordSchema = z.object({
-  email: z.string().email('Invalid email address'),
-});
-
-type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
+import { forgotPasswordSchema, type ForgotPasswordForm } from '../utils/validation/authSchemas';
 
 const ForgotPassword: React.FC = () => {
   const { register, handleSubmit, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm<ForgotPasswordForm>({
@@ -23,9 +19,10 @@ const ForgotPassword: React.FC = () => {
     try {
       await authService.forgotPassword(data.email);
       toast.success('Password reset link sent to your email.');
-    } catch (error: any) {
-      console.error('Forgot password failed:', error);
-      const message = error.response?.data?.message || 'Failed to send reset link.';
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      console.error('Forgot password failed:', axiosError);
+      const message = axiosError.response?.data?.message || 'Failed to send reset link.';
       if (message.toLowerCase().includes('email') || message.toLowerCase().includes('user not found')) {
         setError('email', { type: 'manual', message });
       } else {

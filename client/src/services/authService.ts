@@ -1,7 +1,7 @@
 import api from './api';
 
 export const authService = {
-  login: async (credentials: any) => {
+  login: async (credentials: Record<string, string>) => {
     const response = await api.post('/auth/login', credentials);
     return response.data;
   },
@@ -9,7 +9,7 @@ export const authService = {
     const response = await api.post('/auth/google-login', { token });
     return response.data;
   },
-  register: async (userData: any) => {
+  register: async (userData: Record<string, string>) => {
     const response = await api.post('/auth/register', userData);
     return response.data;
   },
@@ -29,7 +29,7 @@ export const authService = {
     const response = await api.post('/auth/forgot-password', { email });
     return response.data;
   },
-  resetPassword: async (data: any) => {
+  resetPassword: async (data: Record<string, string>) => {
     const response = await api.post('/auth/reset-password', data);
     return response.data;
   },

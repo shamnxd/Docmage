@@ -3,21 +3,16 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import toast from 'react-hot-toast';
 import { useAppDispatch } from '../store/hooks';
 import { setCredentials } from '../store/authSlice';
 import AuthLayout from '../components/auth/AuthLayout';
 import { useGoogleLogin } from '@react-oauth/google';
 
+import type { AxiosError } from 'axios';
 import { authService } from '../services/authService';
 
-const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
+import { loginSchema, type LoginForm } from '../utils/validation/authSchemas';
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -34,9 +29,10 @@ const Login: React.FC = () => {
       const response = await authService.login(data);
       dispatch(setCredentials({ accessToken: response.accessToken, user: response.user }));
       navigate(from, { replace: true });
-    } catch (error: any) {
-      console.error('Login failed:', error);
-      const message = error.response?.data?.message || 'Login failed. Please check your credentials.';
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      console.error('Login failed:', axiosError);
+      const message = axiosError.response?.data?.message || 'Login failed. Please check your credentials.';
       
       if (message === 'Account not verified. Please verify your email.') {
         navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`);
@@ -62,9 +58,10 @@ const Login: React.FC = () => {
         dispatch(setCredentials({ accessToken: response.accessToken, user: response.user }));
         toast.success('Login successful!');
         navigate(from, { replace: true });
-      } catch (error: any) {
-        console.error('Google login failed:', error);
-        toast.error(error.response?.data?.message || 'Google login failed.');
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError<{ message: string }>;
+        console.error('Google login failed:', axiosError);
+        toast.error(axiosError.response?.data?.message || 'Google login failed.');
       }
     },
     onError: () => {

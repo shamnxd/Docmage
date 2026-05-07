@@ -3,20 +3,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import toast from 'react-hot-toast';
 import AuthLayout from '../components/auth/AuthLayout';
 import { authService } from '../services/authService';
+import type { AxiosError } from 'axios';
 
-const resetPasswordSchema = z.object({
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string().min(8, 'Confirm password must be at least 8 characters'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
-type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
+import { resetPasswordSchema, type ResetPasswordForm } from '../utils/validation/authSchemas';
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -37,9 +29,10 @@ const ResetPassword: React.FC = () => {
       await authService.resetPassword({ token, password: data.password });
       toast.success('Password reset successful! You can now log in.');
       setTimeout(() => navigate('/login'), 3000);
-    } catch (error: any) {
-      console.error('Reset password failed:', error);
-      const message = error.response?.data?.message || 'Failed to reset password.';
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      console.error('Reset password failed:', axiosError);
+      const message = axiosError.response?.data?.message || 'Failed to reset password.';
       if (message.toLowerCase().includes('password')) {
         setError('password', { type: 'manual', message });
       } else {

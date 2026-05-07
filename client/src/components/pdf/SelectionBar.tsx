@@ -6,6 +6,7 @@ import { pdfService } from '../../services/pdfService';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import type { AxiosError } from 'axios';
 
 const SelectionBar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -71,9 +72,10 @@ const SelectionBar: React.FC = () => {
           fileName: newFileName.endsWith('.pdf') ? newFileName : `${newFileName}.pdf`
         } 
       });
-    } catch (err: any) {
-      console.error('Export failed:', err);
-      setError(err.response?.data?.message || 'Failed to export PDF');
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<{ message: string }>;
+      console.error('Export failed:', axiosError);
+      setError(axiosError.response?.data?.message || 'Failed to export PDF');
       toast.dismiss(); // Dismiss the loading toast if error
     } finally {
       dispatch(setIsProcessing(false));

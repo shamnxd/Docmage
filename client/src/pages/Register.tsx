@@ -3,22 +3,16 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import toast from 'react-hot-toast';
 import { useAppDispatch } from '../store/hooks';
 import { setCredentials } from '../store/authSlice';
 import AuthLayout from '../components/auth/AuthLayout';
 import { useGoogleLogin } from '@react-oauth/google';
 
+import type { AxiosError } from 'axios';
 import { authService } from '../services/authService';
 
-const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
-
-type RegisterForm = z.infer<typeof registerSchema>;
+import { registerSchema, type RegisterForm } from '../utils/validation/authSchemas';
 
 const Register: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -34,9 +28,10 @@ const Register: React.FC = () => {
     try {
       await authService.register(data);
       navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`, { state: { from } });
-    } catch (error: any) {
-      console.error('Registration failed:', error);
-      const message = error.response?.data?.message || 'Registration failed. Please try again.';
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      console.error('Registration failed:', axiosError);
+      const message = axiosError.response?.data?.message || 'Registration failed. Please try again.';
       
       if (message.toLowerCase().includes('email') || message.toLowerCase().includes('already exists')) {
         setError('email', { type: 'manual', message });
@@ -57,9 +52,10 @@ const Register: React.FC = () => {
         dispatch(setCredentials({ accessToken: response.accessToken, user: response.user }));
         toast.success('Registration successful!');
         navigate(from, { replace: true });
-      } catch (error: any) {
-        console.error('Google login failed:', error);
-        toast.error(error.response?.data?.message || 'Google registration failed.');
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError<{ message: string }>;
+        console.error('Google login failed:', axiosError);
+        toast.error(axiosError.response?.data?.message || 'Google registration failed.');
       }
     },
     onError: () => {
