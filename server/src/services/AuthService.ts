@@ -28,11 +28,15 @@ export class AuthService implements IAuthService {
         throw AppError.conflict(ErrorMessages.USER_EXISTS);
       }
       const hashedPassword = await bcrypt.hash(data.password, 10);
-      await this.userRepository.update(existingUser.id!, { password: hashedPassword });
+      await this.userRepository.update(existingUser.id!, { 
+        password: hashedPassword,
+        name: data.name 
+      });
     } else {
       const hashedPassword = await bcrypt.hash(data.password, 10);
       await this.userRepository.create({
         email: data.email,
+        name: data.name,
         password: hashedPassword,
         isVerified: false
       });
@@ -84,25 +88,32 @@ export class AuthService implements IAuthService {
   }
 
   async logout(userId: string): Promise<void> {
-    await this.userRepository.update(userId, { refreshToken: "" } as any);
+    await this.userRepository.update(userId, { refreshToken: "" });
   }
 
-  async refresh(token: string): Promise<{ accessToken: string }> {
+  async refresh(token: string): Promise<{ accessToken: string; user: { id: string; email: string; name?: string } }> {
     try {
       const decoded = jwt.verify(token, env.JWT_REFRESH_SECRET) as { userId: string };
       const user = await this.userRepository.findById(decoded.userId);
-
+ 
       if (!user || user.refreshToken !== token) {
         throw AppError.unauthorized();
       }
-
+ 
       const accessToken = jwt.sign(
         { userId: user.id, email: user.email },
         env.JWT_ACCESS_SECRET,
         { expiresIn: '15m' }
       );
-
-      return { accessToken };
+ 
+      return { 
+        accessToken, 
+        user: { 
+          id: user.id!, 
+          email: user.email,
+          name: user.name 
+        } 
+      };
     } catch (error) {
       throw AppError.unauthorized();
     }
@@ -178,12 +189,18 @@ export class AuthService implements IAuthService {
         
         user = await this.userRepository.create({
           email,
+          name: displayName,
           password: hashedPassword,
           isVerified: true // Social login users are pre-verified
         });
-      } else if (!user.isVerified) {
-        // If user exists but wasn't verified, verify them now
-        await this.userRepository.update(user.id!, { isVerified: true });
+      } else {
+        const updateData: Partial<{ isVerified: boolean; name: string }> = {};
+        if (!user.isVerified) updateData.isVerified = true;
+        if (!user.name) updateData.name = displayName;
+        
+        if (Object.keys(updateData).length > 0) {
+          await this.userRepository.update(user.id!, updateData);
+        }
       }
 
       return this.generateTokens(user.id!, user.email, displayName);
