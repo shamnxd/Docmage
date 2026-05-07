@@ -23,7 +23,7 @@ const ResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
-  const { register, handleSubmit, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm<ResetPasswordForm>({
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm<ResetPasswordForm>({
     resolver: zodResolver(resetPasswordSchema),
   });
 
@@ -39,7 +39,12 @@ const ResetPassword: React.FC = () => {
       setTimeout(() => navigate('/login'), 3000);
     } catch (error: any) {
       console.error('Reset password failed:', error);
-      toast.error(error.response?.data?.message || 'Failed to reset password.');
+      const message = error.response?.data?.message || 'Failed to reset password.';
+      if (message.toLowerCase().includes('password')) {
+        setError('password', { type: 'manual', message });
+      } else {
+        setError('root', { type: 'manual', message });
+      }
     }
   };
 
@@ -119,6 +124,13 @@ const ResetPassword: React.FC = () => {
           </div>
           {errors.confirmPassword && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.confirmPassword.message}</p>}
         </div>
+
+        {errors.root && (
+          <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="w-1 h-1 rounded-full bg-red-500" />
+            <p className="text-[10px] font-bold text-red-500 leading-tight">{errors.root.message}</p>
+          </div>
+        )}
 
         <button 
           type="submit" 

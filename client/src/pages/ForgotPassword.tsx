@@ -15,7 +15,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPassword: React.FC = () => {
-  const { register, handleSubmit, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm<ForgotPasswordForm>({
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm<ForgotPasswordForm>({
     resolver: zodResolver(forgotPasswordSchema),
   });
 
@@ -25,7 +25,12 @@ const ForgotPassword: React.FC = () => {
       toast.success('Password reset link sent to your email.');
     } catch (error: any) {
       console.error('Forgot password failed:', error);
-      toast.error(error.response?.data?.message || 'Failed to send reset link.');
+      const message = error.response?.data?.message || 'Failed to send reset link.';
+      if (message.toLowerCase().includes('email') || message.toLowerCase().includes('user not found')) {
+        setError('email', { type: 'manual', message });
+      } else {
+        setError('root', { type: 'manual', message });
+      }
     }
   };
 
@@ -72,6 +77,13 @@ const ForgotPassword: React.FC = () => {
           </div>
           {errors.email && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.email.message}</p>}
         </div>
+
+        {errors.root && (
+          <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="w-1 h-1 rounded-full bg-red-500" />
+            <p className="text-[10px] font-bold text-red-500 leading-tight">{errors.root.message}</p>
+          </div>
+        )}
 
         <button 
           type="submit" 

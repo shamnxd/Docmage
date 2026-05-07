@@ -107,7 +107,12 @@ const VerifyOtp: React.FC = () => {
           ))}
         </div>
 
-        {error && <p className="text-[10px] font-bold text-red-500 text-center">{error}</p>}
+        {error && (
+          <div className="flex items-center justify-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="w-1 h-1 rounded-full bg-red-500" />
+            <p className="text-[10px] font-bold text-red-500 leading-tight">{error}</p>
+          </div>
+        )}
 
         <button 
           type="submit" 

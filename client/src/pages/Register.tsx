@@ -26,7 +26,7 @@ const Register: React.FC = () => {
   const location = useLocation();
   const from = location.state?.from || '/dashboard';
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterForm>({
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
   });
 
@@ -36,7 +36,17 @@ const Register: React.FC = () => {
       navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`, { state: { from } });
     } catch (error: any) {
       console.error('Registration failed:', error);
-      toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
+      const message = error.response?.data?.message || 'Registration failed. Please try again.';
+      
+      if (message.toLowerCase().includes('email') || message.toLowerCase().includes('already exists')) {
+        setError('email', { type: 'manual', message });
+      } else if (message.toLowerCase().includes('password')) {
+        setError('password', { type: 'manual', message });
+      } else if (message.toLowerCase().includes('name')) {
+        setError('name', { type: 'manual', message });
+      } else {
+        setError('root', { type: 'manual', message });
+      }
     }
   };
 
@@ -104,6 +114,13 @@ const Register: React.FC = () => {
           </div>
           {errors.password && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.password.message}</p>}
         </div>
+
+        {errors.root && (
+          <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="w-1 h-1 rounded-full bg-red-500" />
+            <p className="text-[10px] font-bold text-red-500 leading-tight">{errors.root.message}</p>
+          </div>
+        )}
 
         <button 
           type="submit" 

@@ -19,10 +19,12 @@ const SelectionBar: React.FC = () => {
   
   const [newFileName, setNewFileName] = useState('');
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (selectedPages.length === 0 || !file) return null;
 
   const handleExport = async () => {
+    setError(null);
     if (!isAuthenticated) {
       toast('Please sign in to export your PDF', { icon: '🔑' });
       navigate('/login', { state: { from: location.pathname } });
@@ -35,7 +37,7 @@ const SelectionBar: React.FC = () => {
     }
 
     if (!newFileName) {
-      toast.error('Please enter a file name');
+      setError('Please enter a file name');
       return;
     }
 
@@ -69,9 +71,10 @@ const SelectionBar: React.FC = () => {
           fileName: newFileName.endsWith('.pdf') ? newFileName : `${newFileName}.pdf`
         } 
       });
-    } catch (error: any) {
-      console.error('Export failed:', error);
-      toast.error(error.response?.data?.message || 'Failed to export PDF');
+    } catch (err: any) {
+      console.error('Export failed:', err);
+      setError(err.response?.data?.message || 'Failed to export PDF');
+      toast.dismiss(); // Dismiss the loading toast if error
     } finally {
       dispatch(setIsProcessing(false));
     }
@@ -116,6 +119,13 @@ const SelectionBar: React.FC = () => {
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[10px]">.pdf</div>
                 </div>
+
+                {error && (
+                  <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="w-1 h-1 rounded-full bg-red-500" />
+                    <p className="text-[10px] font-bold text-red-500 leading-tight">{error}</p>
+                  </div>
+                )}
 
                 <div className="flex gap-2">
                   <button 

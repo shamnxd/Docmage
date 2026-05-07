@@ -6,10 +6,12 @@ import toast from 'react-hot-toast';
 
 const FileUpload: React.FC = () => {
   const dispatch = useAppDispatch();
+  const [error, setError] = React.useState<string | null>(null);
 
   const handleFile = (file: File) => {
+    setError(null);
     if (file.type !== 'application/pdf') {
-      toast('not supported');
+      setError('Only PDF files are supported.');
       return;
     }
     setGlobalFile(file);
@@ -57,6 +59,13 @@ const FileUpload: React.FC = () => {
         <div className="btn-primary py-3 px-10 inline-flex rounded-xl">
           <Plus size={18} strokeWidth={3} /> Choose PDF File
         </div>
+
+        {error && (
+          <div className="mt-6 flex items-center justify-center gap-2 animate-in fade-in slide-in-from-bottom-1 duration-200">
+            <div className="w-1 h-1 rounded-full bg-red-500" />
+            <p className="text-[10px] font-bold text-red-500 leading-tight tracking-wide uppercase">{error}</p>
+          </div>
+        )}
       </label>
     </div>
   );
