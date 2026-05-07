@@ -2,12 +2,16 @@ import React, { useCallback } from 'react';
 import { Cloud, Plus } from 'lucide-react';
 import { useAppDispatch } from '../../store/hooks';
 import { setPdfFile, setGlobalFile } from '../../store/pdfSlice';
+import toast from 'react-hot-toast';
 
 const FileUpload: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const handleFile = (file: File) => {
-    if (file.type !== 'application/pdf') return;
+    if (file.type !== 'application/pdf') {
+      toast('not supported');
+      return;
+    }
     setGlobalFile(file);
     dispatch(setPdfFile({ name: file.name }));
   };

@@ -1,11 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { CheckCircle, FileText } from 'lucide-react';
 import Navbar from '../components/common/Navbar';
+import { pdfService } from '../services/pdfService';
 
 const ExtractionSuccess: React.FC = () => {
   const location = useLocation();
   const fileName = location.state?.fileName || 'Extracted_Document.pdf';
+  const pdfId = location.state?.pdfId;
+
+  useEffect(() => {
+    if (pdfId) {
+      handleDownload();
+    }
+  }, [pdfId]);
+
+  const handleDownload = async () => {
+    try {
+      const blob = await pdfService.download(pdfId);
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen flex flex-col relative overflow-hidden">

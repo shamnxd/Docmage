@@ -71,7 +71,7 @@ const Dashboard: React.FC = () => {
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(url);
       toast.success('Download complete!');
-    } catch (error) {
+    } catch {
       toast.error('Download failed');
     } finally {
       setIsDownloading(null);
@@ -88,7 +88,7 @@ const Dashboard: React.FC = () => {
       dispatch(setPdfFile({ name: file.name }));
       toast.dismiss(loadingToast);
       navigate('/');
-    } catch (error) {
+    } catch {
       toast.error('Failed to load document for editing');
     } finally {
       setIsOpening(null);
@@ -105,7 +105,7 @@ const Dashboard: React.FC = () => {
       setShowDeleteModal(false);
       setPdfToDelete(null);
       fetchPdfs(debouncedSearch);
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete document');
     } finally {
       setIsSubmitting(false);
