@@ -23,4 +23,5 @@ export const ErrorMessages = {
   ACCOUNT_UNVERIFIED: 'Account not verified. Please verify your email.',
   NO_FILE_UPLOADED: 'No file uploaded',
   INVALID_PAGE_INDICES: 'Page indices must be a non-empty array of numbers',
+  TOO_MANY_REQUESTS: 'Too many requests from this IP, please try again after 15 minutes',
 } as const;
