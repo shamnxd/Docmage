@@ -1,4 +1,4 @@
-import type { IUser } from '../../models/UserModel.js';
+import type { IUser } from '../../models/UserModel';
 
 export class UserMapper {
   static toResponseDTO(user: IUser) {

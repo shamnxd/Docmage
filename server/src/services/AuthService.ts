@@ -2,17 +2,17 @@ import bcrypt from 'bcryptjs';
 import axios from 'axios';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import type { IAuthService } from '../interfaces/IAuthService.js';
-import type { IUserRepository } from '../interfaces/IUserRepository.js';
-import type { IOtpService } from '../interfaces/IOtpService.js';
-import type { RegisterRequestDto, LoginResponseDto } from '../dtos/AuthDto.js';
-import { AppError } from '../utils/errors/AppError.js';
-import { HttpStatus } from '../utils/constants/HttpStatus.js';
-import { ErrorMessages, SuccessMessages } from '../utils/constants/Messages.js';
-import { env } from '../config/Env.js';
-import { Logger } from '../utils/Logger.js';
+import type { IAuthService } from '../interfaces/IAuthService';
+import type { IUserRepository } from '../interfaces/IUserRepository';
+import type { IOtpService } from '../interfaces/IOtpService';
+import type { RegisterRequestDto, LoginResponseDto } from '../dtos/AuthDto';
+import { AppError } from '../utils/errors/AppError';
+import { HttpStatus } from '../utils/constants/HttpStatus';
+import { ErrorMessages, SuccessMessages } from '../utils/constants/Messages';
+import { env } from '../config/Env';
+import { Logger } from '../utils/Logger';
 
-import type { IEmailService } from '../interfaces/IEmailService.js';
+import type { IEmailService } from '../interfaces/IEmailService';
 
 export class AuthService implements IAuthService {
   constructor(

@@ -1,4 +1,4 @@
-import type { IPdf } from '../../models/PdfModel.js';
+import type { IPdf } from '../../models/PdfModel';
 
 export class PdfMapper {
   static toResponseDTO(pdf: IPdf) {

@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { env } from '../config/Env.js';
+import { env } from '../config/Env';
 
 const levels = {
   error: 0,

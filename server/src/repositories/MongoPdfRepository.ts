@@ -1,7 +1,7 @@
-import { BaseMongoRepository } from './MongoBaseRepository.js';
-import PdfModel from '../models/PdfModel.js';
-import type { IPdf } from '../models/PdfModel.js';
-import type { IPdfRepository } from '../interfaces/IPdfRepository.js';
+import { BaseMongoRepository } from './MongoBaseRepository';
+import PdfModel from '../models/PdfModel';
+import type { IPdf } from '../models/PdfModel';
+import type { IPdfRepository } from '../interfaces/IPdfRepository';
 
 export class MongoPdfRepository extends BaseMongoRepository<IPdf> implements IPdfRepository {
   constructor() {

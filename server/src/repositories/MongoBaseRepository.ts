@@ -1,5 +1,5 @@
 import type { Model, Document } from 'mongoose';
-import type { IBaseRepository, PaginationResult } from '../interfaces/IBaseRepository.js';
+import type { IBaseRepository, PaginationResult } from '../interfaces/IBaseRepository';
 
 export abstract class BaseMongoRepository<T extends Document> implements IBaseRepository<T> {
   protected constructor(protected readonly model: Model<T>) { }

@@ -1,4 +1,4 @@
-import type { LoginResponseDto, RegisterRequestDto } from "../dtos/AuthDto.js";
+import type { LoginResponseDto, RegisterRequestDto } from "../dtos/AuthDto";
 
 export interface IAuthService {
   register(data: RegisterRequestDto): Promise<{ message: string }>;

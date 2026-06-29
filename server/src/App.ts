@@ -4,15 +4,19 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
-import { connectDB } from "./config/Db.js";
-import { connectRedis } from "./config/Redis.js";
-import { env } from "./config/Env.js";
-import { authController, pdfController, authMiddleware } from "./Container.js";
-import { PdfRoutes } from "./routes/PdfRoutes.js";
-import { globalErrorHandler } from "./middlewares/ErrorMiddleware.js";
-import authRoutes from "./routes/AuthRoutes.js";
-import { Logger } from "./utils/Logger.js";
-import { ROUTES } from "./utils/constants/Routes.js";
+import { connectDB } from "./config/Db";
+import { connectRedis } from "./config/Redis";
+import { env } from "./config/Env";
+import { authController, pdfController, authMiddleware } from "./Container";
+import { PdfRoutes } from "./routes/PdfRoutes";
+import { globalErrorHandler } from "./middlewares/ErrorMiddleware";
+import authRoutes from "./routes/AuthRoutes";
+import { Logger } from "./utils/Logger";
+import { ErrorMessages } from "./utils/constants/Messages";
+import { HttpStatus } from "./utils/constants/HttpStatus";
+import { ROUTES } from "./utils/constants/Routes";
+
+
 
 class App {
   public app: Application;
@@ -42,7 +46,7 @@ class App {
     const limiter = rateLimit({
       windowMs: 15 * 60 * 1000,
       max: 100,
-      message: "Too many requests from this IP, please try again after 15 minutes",
+      message: ErrorMessages.TOO_MANY_REQUESTS,
     });
     this.app.use("/api", limiter);
   }
@@ -54,7 +58,7 @@ class App {
     this.app.use(`${ROUTES.API_BASE}${ROUTES.PDF.BASE}`, pdfRoutes.router);
 
     this.app.get(ROUTES.HEALTH, (req, res) => {
-      res.status(200).json({ 
+      res.status(HttpStatus.OK).json({ 
         status: "UP",
         version: "1.0.0",
         uptime: process.uptime(),

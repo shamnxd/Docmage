@@ -1,6 +1,6 @@
-import { env } from "../config/Env.js";
-import redisClient from "../config/Redis.js";
-import type { IOtpService } from "../interfaces/IOtpService.js";
+import { env } from "../config/Env";
+import redisClient from "../config/Redis";
+import type { IOtpService } from "../interfaces/IOtpService";
 
 export class RedisOtpService implements IOtpService {
   private readonly EXPIRY = env.OTP_EXPIRY_SECONDS;

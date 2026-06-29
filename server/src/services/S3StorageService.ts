@@ -1,8 +1,8 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import type { IFileStorageService } from '../interfaces/IFileStorage.js';
+import type { IFileStorageService } from '../interfaces/IFileStorage';
 import crypto from 'crypto';
-import { Logger } from '../utils/Logger.js';
+import { Logger } from '../utils/Logger';
 
 export class S3StorageService implements IFileStorageService {
   private readonly s3Client: S3Client;

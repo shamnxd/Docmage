@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-import { AppError } from '../utils/errors/AppError.js';
-import { HttpStatus } from '../utils/constants/HttpStatus.js';
-import { ErrorMessages } from '../utils/constants/Messages.js';
+import { AppError } from '../utils/errors/AppError';
+import { HttpStatus } from '../utils/constants/HttpStatus';
+import { ErrorMessages } from '../utils/constants/Messages';
 
 export const globalErrorHandler = (
   err: Error | AppError | ZodError | Record<string, unknown>,

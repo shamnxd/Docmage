@@ -1,5 +1,5 @@
-import { HttpStatus } from '../constants/HttpStatus.js';
-import { ErrorMessages } from '../constants/Messages.js';
+import { HttpStatus } from '../constants/HttpStatus';
+import { ErrorMessages } from '../constants/Messages';
 
 export class AppError extends Error {
   public readonly statusCode: number;

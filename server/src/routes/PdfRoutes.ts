@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import multer from 'multer';
-import type { PdfController } from '../controllers/PdfController.js';
-import type { AuthMiddleware } from '../middlewares/AuthMiddleware.js';
-import { validate } from '../middlewares/ValidationMiddleware.js';
-import { extractPagesSchema } from '../dtos/PdfDto.js';
-import { paginationSchema } from '../dtos/PaginationDto.js';
-import { ROUTES } from '../utils/constants/Routes.js';
+import type { PdfController } from '../controllers/PdfController';
+import type { AuthMiddleware } from '../middlewares/AuthMiddleware';
+import { validate } from '../middlewares/ValidationMiddleware';
+import { extractPagesSchema } from '../dtos/PdfDto';
+import { paginationSchema } from '../dtos/PaginationDto';
+import { ROUTES } from '../utils/constants/Routes';
 
 const upload = multer({ storage: multer.memoryStorage() });
 

@@ -9,11 +9,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/Server.js",
+    "start": "tsx dist/Server.js",
     "dev": "tsx watch src/Server.ts",
     "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
+    "tsx": "^4.21.0",
     "@aws-sdk/client-s3": "^3.1038.0",
     "@aws-sdk/s3-request-presigner": "^3.1038.0",
     "axios": "^1.15.2",
@@ -50,7 +51,6 @@
     "eslint": "^10.2.1",
     "globals": "^17.5.0",
     "ts-node-dev": "^2.0.0",
-    "tsx": "^4.21.0",
     "typescript": "^6.0.3"
   }
 }

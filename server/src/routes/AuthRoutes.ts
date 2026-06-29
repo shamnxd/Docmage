@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { authController, authMiddleware } from '../Container.js';
-import { validate } from '../middlewares/ValidationMiddleware.js';
+import { authController, authMiddleware } from '../Container';
+import { validate } from '../middlewares/ValidationMiddleware';
 import {
   registerSchema,
   loginSchema,
@@ -9,7 +9,7 @@ import {
   resetPasswordSchema,
   googleLoginSchema
 } from '../dtos/AuthDto.js';
-import { ROUTES } from '../utils/constants/Routes.js';
+import { ROUTES } from '../utils/constants/Routes';
 
 const router = Router();
 

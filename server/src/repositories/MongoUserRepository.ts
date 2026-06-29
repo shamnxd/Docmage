@@ -1,7 +1,7 @@
-import UserModel from "../models/UserModel.js";
-import type { IUser } from "../models/UserModel.js";
-import { BaseMongoRepository } from "./MongoBaseRepository.js";
-import type { IUserRepository } from "../interfaces/IUserRepository.js";
+import UserModel from "../models/UserModel";
+import type { IUser } from "../models/UserModel";
+import { BaseMongoRepository } from "./MongoBaseRepository";
+import type { IUserRepository } from "../interfaces/IUserRepository";
 
 export class MongoUserRepository extends BaseMongoRepository<IUser> implements IUserRepository {
   constructor() {

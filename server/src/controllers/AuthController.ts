@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
-import type { IAuthService } from '../interfaces/IAuthService.js';
-import { HttpStatus } from '../utils/constants/HttpStatus.js';
-import { env } from '../config/Env.js';
-import { AppError } from '../utils/errors/AppError.js';
+import type { IAuthService } from '../interfaces/IAuthService';
+import { HttpStatus } from '../utils/constants/HttpStatus';
+import { env } from '../config/Env';
+import { AppError } from '../utils/errors/AppError';
 
 interface AuthRequest extends Request {
   user?: { userId: string; email: string };

@@ -1,14 +1,14 @@
-import { AuthController } from "./controllers/AuthController.js";
-import { MongoUserRepository } from "./repositories/MongoUserRepository.js";
-import { AuthService } from "./services/AuthService.js";
-import { RedisOtpService } from "./services/RedisOtpService.js";
-import { MongoPdfRepository } from "./repositories/MongoPdfRepository.js";
-import { S3StorageService } from "./services/S3StorageService.js";
-import { PdfService } from "./services/PdfService.js";
-import { PdfController } from "./controllers/PdfController.js";
-import { AuthMiddleware } from "./middlewares/AuthMiddleware.js";
-import { EmailService } from "./services/EmailService.js";
-import { env } from "./config/Env.js";
+import { AuthController } from "./controllers/AuthController";
+import { MongoUserRepository } from "./repositories/MongoUserRepository";
+import { AuthService } from "./services/AuthService";
+import { RedisOtpService } from "./services/RedisOtpService";
+import { MongoPdfRepository } from "./repositories/MongoPdfRepository";
+import { S3StorageService } from "./services/S3StorageService";
+import { PdfService } from "./services/PdfService";
+import { PdfController } from "./controllers/PdfController";
+import { AuthMiddleware } from "./middlewares/AuthMiddleware";
+import { EmailService } from "./services/EmailService";
+import { env } from "./config/Env";
 
 const storageService = new S3StorageService(
   env.S3_REGION,
