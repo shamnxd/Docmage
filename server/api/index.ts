@@ -1,6 +1,6 @@
-import App from '../App';
-import { connectDB } from '../config/Db';
-import { connectRedis } from '../config/Redis';
+import App from '../src/App';
+import { connectDB } from '../src/config/Db';
+import { connectRedis } from '../src/config/Redis';
 
 // Ensure database connections are established
 connectDB().catch(err => console.error('DB Connection Error:', err));
