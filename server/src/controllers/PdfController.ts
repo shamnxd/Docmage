@@ -1,14 +1,14 @@
 import type { Response, NextFunction } from 'express';
-import { PdfService } from '../services/PdfService.js';
-import { PdfMapper } from '../utils/mappers/PdfMapper.js';
-import { HttpStatus } from '../utils/constants/HttpStatus.js';
-import { ErrorMessages, SuccessMessages } from '../utils/constants/Messages.js';
-import { AppError } from '../utils/errors/AppError.js';
-import type { AuthRequest } from '../middlewares/AuthMiddleware.js';
-import type { PaginationQuery } from '../dtos/PaginationDto.js';
+import type { IPdfService } from '../interfaces/IPdfService';
+import { PdfMapper } from '../utils/mappers/PdfMapper';
+import { HttpStatus } from '../utils/constants/HttpStatus';
+import { ErrorMessages, SuccessMessages } from '../utils/constants/Messages';
+import { AppError } from '../utils/errors/AppError';
+import type { AuthRequest } from '../middlewares/AuthMiddleware';
+import type { PaginationQuery } from '../dtos/PaginationDto';
 
 export class PdfController {
-  constructor(private readonly pdfService: PdfService) { }
+  constructor(private readonly pdfService: IPdfService) { }
 
   public upload = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {

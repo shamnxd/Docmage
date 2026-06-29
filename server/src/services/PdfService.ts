@@ -1,14 +1,14 @@
 import { PDFDocument } from 'pdf-lib';
-import type { IPdf } from '../models/PdfModel.js';
-import type { IPdfRepository } from '../interfaces/IPdfRepository.js';
-import type { IFileStorageService } from '../interfaces/IFileStorage.js';
-import { AppError } from '../utils/errors/AppError.js';
-import { HttpStatus } from '../utils/constants/HttpStatus.js';
-import { ErrorMessages } from '../utils/constants/Messages.js';
-import type { PaginationQuery } from '../dtos/PaginationDto.js';
-import { Logger } from '../utils/Logger.js';
+import type { IPdf } from '../models/PdfModel';
+import type { IPdfRepository } from '../interfaces/IPdfRepository';
+import type { IFileStorageService } from '../interfaces/IFileStorage';
+import type { IPdfService } from '../interfaces/IPdfService';
+import { AppError } from '../utils/errors/AppError';
+import { ErrorMessages } from '../utils/constants/Messages';
+import type { PaginationQuery } from '../dtos/PaginationDto';
+import { Logger } from '../utils/Logger';
 
-export class PdfService {
+export class PdfService implements IPdfService {
   constructor(
     private readonly pdfRepository: IPdfRepository,
     private readonly fileStorageService: IFileStorageService
