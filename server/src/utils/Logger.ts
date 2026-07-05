@@ -1,6 +1,5 @@
 import winston from 'winston';
 import { env } from '../config/Env';
-
 const levels = {
   error: 0,
   warn: 1,
@@ -8,11 +7,9 @@ const levels = {
   http: 3,
   debug: 4,
 };
-
 const level = () => {
   return env.NODE_ENV === 'development' ? 'debug' : 'warn';
 };
-
 const colors = {
   error: 'red',
   warn: 'yellow',
@@ -20,9 +17,7 @@ const colors = {
   http: 'magenta',
   debug: 'white',
 };
-
 winston.addColors(colors);
-
 const format = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.colorize({ all: true }),
@@ -30,12 +25,9 @@ const format = winston.format.combine(
     (info) => `${info.timestamp} ${info.level}: ${info.message}`,
   ),
 );
-
 const transports: winston.transport[] = [
   new winston.transports.Console(),
 ];
-
-// Only add file logging in development mode and NOT on Vercel
 if (env.NODE_ENV === 'development' && !process.env.VERCEL) {
   transports.push(
     new winston.transports.File({
@@ -45,10 +37,9 @@ if (env.NODE_ENV === 'development' && !process.env.VERCEL) {
     new winston.transports.File({ filename: 'logs/all.log' })
   );
 }
-
 export const Logger = winston.createLogger({
   level: level(),
   levels,
   format,
   transports,
-});
+});

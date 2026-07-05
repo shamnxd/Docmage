@@ -1,5 +1,4 @@
 import type { LoginResponseDto, RegisterRequestDto } from "../dtos/AuthDto";
-
 export interface IAuthService {
   register(data: RegisterRequestDto): Promise<{ message: string }>;
   verifyAndRegister(email: string, otp: string): Promise<LoginResponseDto>;
@@ -10,4 +9,4 @@ export interface IAuthService {
   forgotPassword(email: string): Promise<{ message: string }>;
   resetPassword(token: string, password: string): Promise<{ message: string }>;
   resendOtp(email: string): Promise<{ message: string }>;
-}
+}

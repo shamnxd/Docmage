@@ -1,5 +1,4 @@
 import type { IPdf } from '../../models/PdfModel';
-
 export class PdfMapper {
   static toResponseDTO(pdf: IPdf) {
     return {
@@ -10,4 +9,4 @@ export class PdfMapper {
       createdAt: pdf.createdAt,
     };
   }
-}
+}

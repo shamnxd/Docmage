@@ -1,5 +1,4 @@
 import { z } from 'zod';
-
 export const paginationSchema = z.object({
   query: z.object({
     page: z.preprocess((val) => Number(val) || 1, z.number().default(1)),
@@ -9,5 +8,4 @@ export const paginationSchema = z.object({
     sortOrder: z.enum(['asc', 'desc']).default('desc'),
   }),
 });
-
 export type PaginationQuery = z.infer<typeof paginationSchema>['query'];

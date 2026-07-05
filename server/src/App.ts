@@ -15,22 +15,16 @@ import { Logger } from "./utils/Logger";
 import { ErrorMessages } from "./utils/constants/Messages";
 import { HttpStatus } from "./utils/constants/HttpStatus";
 import { ROUTES } from "./utils/constants/Routes";
-
-
-
 class App {
   public app: Application;
   private port: number | string;
-
   constructor() {
     this.app = express();
     this.port = env.PORT;
-
     this.initializeMiddlewares();
     this.initializeRoutes();
     this.initializeErrorHandling();
   }
-
   private initializeMiddlewares(): void {
     this.app.use(helmet());
     this.app.use(cors({
@@ -42,7 +36,6 @@ class App {
     this.app.use(cookieParser());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-
     const limiter = rateLimit({
       windowMs: 15 * 60 * 1000,
       max: 100,
@@ -50,13 +43,10 @@ class App {
     });
     this.app.use("/api", limiter);
   }
-
   private initializeRoutes(): void {
     this.app.use(`${ROUTES.API_BASE}${ROUTES.AUTH.BASE}`, authRoutes);
-
     const pdfRoutes = new PdfRoutes(pdfController, authMiddleware);
     this.app.use(`${ROUTES.API_BASE}${ROUTES.PDF.BASE}`, pdfRoutes.router);
-
     this.app.get(ROUTES.HEALTH, (req, res) => {
       res.status(HttpStatus.OK).json({ 
         status: "UP",
@@ -66,16 +56,13 @@ class App {
       });
     });
   }
-
   private initializeErrorHandling(): void {
     this.app.use(globalErrorHandler);
   }
-
   public async listen(): Promise<void> {
     try {
       await connectDB();
       await connectRedis();
-
       this.app.listen(this.port, () => {
         Logger.info(`[Server]: Running at http://localhost:${this.port} in ${env.NODE_ENV} mode`);
       });
@@ -85,5 +72,4 @@ class App {
     }
   }
 }
-
-export default App;
+export default App;

@@ -1,5 +1,4 @@
 import type { IUser } from '../../models/UserModel';
-
 export class UserMapper {
   static toResponseDTO(user: IUser) {
     return {
@@ -9,4 +8,4 @@ export class UserMapper {
       createdAt: user.createdAt,
     };
   }
-}
+}
