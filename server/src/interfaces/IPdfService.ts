@@ -1,7 +1,6 @@
 import type { IPdf } from "../models/PdfModel";
 import type { PaginationQuery } from "../dtos/PaginationDto";
 import type { PaginationResult } from "./IBaseRepository";
-
 export interface IPdfService {
   uploadPdf(userId: string, file: Express.Multer.File): Promise<IPdf>;
   getUserPdfs(userId: string, query: PaginationQuery): Promise<PaginationResult<IPdf>>;

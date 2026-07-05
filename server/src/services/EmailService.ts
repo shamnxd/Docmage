@@ -3,10 +3,8 @@ import { env } from '../config/Env';
 import { Logger } from '../utils/Logger';
 import type { IEmailService } from '../interfaces/IEmailService';
 import { getOtpTemplate, getPasswordResetTemplate } from '../templates/EmailTemplates';
-
 export class EmailService implements IEmailService {
   private transporter: nodemailer.Transporter;
-
   constructor() {
     this.transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -16,7 +14,6 @@ export class EmailService implements IEmailService {
       },
     });
   }
-
   async sendOtp(email: string, otp: string): Promise<void> {
     const mailOptions = {
       from: `"DocMage" <${env.EMAIL_USER}>`,
@@ -24,7 +21,6 @@ export class EmailService implements IEmailService {
       subject: 'Verify your DocMage Account',
       html: getOtpTemplate(otp),
     };
-
     try {
       await this.transporter.sendMail(mailOptions);
       Logger.info(`[EmailService]: OTP sent to ${email}`);
@@ -33,7 +29,6 @@ export class EmailService implements IEmailService {
       throw new Error('Failed to send verification email', { cause: error });
     }
   }
-
   async sendPasswordResetLink(email: string, token: string): Promise<void> {
     const resetUrl = `${env.FRONTEND_URL}/reset-password?token=${token}`;
     const mailOptions = {
@@ -42,7 +37,6 @@ export class EmailService implements IEmailService {
       subject: 'Reset your DocMage Password',
       html: getPasswordResetTemplate(resetUrl),
     };
-
     try {
       await this.transporter.sendMail(mailOptions);
       Logger.info(`[EmailService]: Password reset link sent to ${email}`);
@@ -52,4 +46,3 @@ export class EmailService implements IEmailService {
     }
   }
 }
-

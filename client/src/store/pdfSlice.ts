@@ -1,27 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 export interface PageItem {
-  id: string; // unique id for dnd
-  originalIndex: number; // index in the original pdf
+  id: string; 
+  originalIndex: number; 
 }
-
 interface PdfState {
   numPages: number;
-  selectedPages: number[]; // based on originalIndex (1-indexed)
-  pageOrder: PageItem[]; // list of pages in current order
+  selectedPages: number[]; 
+  pageOrder: PageItem[]; 
   isProcessing: boolean;
   fileName: string | null;
 }
-
-// Module-level ref for non-serializable File object
 let _persistedFile: File | null = null;
-
 export const setGlobalFile = (file: File | null) => {
   _persistedFile = file;
 };
-
 export const getGlobalFile = () => _persistedFile;
-
 const initialState: PdfState = {
   numPages: 0,
   selectedPages: [],
@@ -29,7 +22,6 @@ const initialState: PdfState = {
   isProcessing: false,
   fileName: null,
 };
-
 const pdfSlice = createSlice({
   name: 'pdf',
   initialState,
@@ -74,7 +66,6 @@ const pdfSlice = createSlice({
     },
   },
 });
-
 export const { 
   setPdfFile, 
   setNumPages, 
@@ -84,5 +75,4 @@ export const {
   setIsProcessing, 
   resetPdf 
 } = pdfSlice.actions;
-
 export default pdfSlice.reducer;

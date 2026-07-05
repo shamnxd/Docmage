@@ -3,7 +3,6 @@ import { ZodError } from 'zod';
 import { AppError } from '../utils/errors/AppError';
 import { HttpStatus } from '../utils/constants/HttpStatus';
 import { ErrorMessages } from '../utils/constants/Messages';
-
 export const globalErrorHandler = (
   err: Error | AppError | ZodError | Record<string, unknown>,
   req: Request,
@@ -12,7 +11,6 @@ export const globalErrorHandler = (
 ) => {
   let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
   let message: string = ErrorMessages.INTERNAL_SERVER_ERROR;
-
   if (err && typeof err === 'object') {
     if ('statusCode' in err && typeof err.statusCode === 'number') {
       statusCode = err.statusCode;
@@ -21,26 +19,22 @@ export const globalErrorHandler = (
       message = err.message;
     }
   }
-
   if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
   }
-
   if (err instanceof ZodError) {
     statusCode = HttpStatus.BAD_REQUEST;
     message = err.issues.map((issue) => issue.message).join(', ') || ErrorMessages.VALIDATION_ERROR;
   }
-
   if (err && typeof err === 'object' && 'name' in err) {
     if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
       statusCode = HttpStatus.UNAUTHORIZED;
       message = ErrorMessages.UNAUTHORIZED;
     }
   }
-
   res.status(statusCode).json({
     status: 'error',
     message,
   });
-};
+};

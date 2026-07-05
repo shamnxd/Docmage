@@ -1,6 +1,5 @@
 import type { Document } from 'mongoose';
 import { Schema, model } from 'mongoose';
-
 export interface IUser extends Document {
   id: string;
   email: string;
@@ -13,7 +12,6 @@ export interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
-
 const userSchema = new Schema<IUser>(
   {
     email: { 
@@ -46,6 +44,5 @@ const userSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
-
 const UserModel = model<IUser>('User', userSchema);
 export default UserModel;

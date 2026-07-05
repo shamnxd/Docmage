@@ -1,23 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 export interface AuthUser {
   id: string;
   email: string;
   name?: string;
 }
-
 interface AuthState {
   accessToken: string | null;
   user: AuthUser | null;
-  isInitialized: boolean; // has the silent refresh on startup been attempted?
+  isInitialized: boolean; 
 }
-
 const initialState: AuthState = {
   accessToken: null,
   user: null,
   isInitialized: false,
 };
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -41,8 +37,6 @@ const authSlice = createSlice({
     },
   },
 });
-
 export const { setCredentials, setAccessToken, clearCredentials, setInitialized } =
   authSlice.actions;
-
 export default authSlice.reducer;

@@ -8,31 +8,25 @@ import { useAppDispatch } from '../store/hooks';
 import { setCredentials } from '../store/authSlice';
 import AuthLayout from '../components/auth/AuthLayout';
 import { useGoogleLogin } from '@react-oauth/google';
-
 import type { AxiosError } from 'axios';
-import { authService } from '../services/authService';
-
+import { authApi } from '../api/authApi';
 import { registerSchema, type RegisterForm } from '../utils/validation/authSchemas';
-
 const Register: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || '/dashboard';
-
   const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
   });
-
   const onSubmit = async (data: RegisterForm) => {
     try {
-      await authService.register(data);
+      await authApi.register(data);
       navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`, { state: { from } });
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message: string }>;
       console.error('Registration failed:', axiosError);
       const message = axiosError.response?.data?.message || 'Registration failed. Please try again.';
-      
       if (message.toLowerCase().includes('email') || message.toLowerCase().includes('already exists')) {
         setError('email', { type: 'manual', message });
       } else if (message.toLowerCase().includes('password')) {
@@ -44,11 +38,10 @@ const Register: React.FC = () => {
       }
     }
   };
-
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const response = await authService.googleLogin(tokenResponse.access_token);
+        const response = await authApi.googleLogin(tokenResponse.access_token);
         dispatch(setCredentials({ accessToken: response.accessToken, user: response.user }));
         toast.success('Registration successful!');
         navigate(from, { replace: true });
@@ -62,7 +55,6 @@ const Register: React.FC = () => {
       toast.error('Google login failed.');
     },
   });
-
   return (
     <AuthLayout 
       title="Create Account" 
@@ -82,7 +74,6 @@ const Register: React.FC = () => {
           </div>
           {errors.name && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.name.message}</p>}
         </div>
-
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-slate-700 ml-1">Email Address</label>
           <div className="relative group">
@@ -96,7 +87,6 @@ const Register: React.FC = () => {
           </div>
           {errors.email && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.email.message}</p>}
         </div>
-
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-slate-700 ml-1">Password</label>
           <div className="relative group">
@@ -110,14 +100,12 @@ const Register: React.FC = () => {
           </div>
           {errors.password && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.password.message}</p>}
         </div>
-
         {errors.root && (
           <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
             <div className="w-1 h-1 rounded-full bg-red-500" />
             <p className="text-[10px] font-bold text-red-500 leading-tight">{errors.root.message}</p>
           </div>
         )}
-
         <button 
           type="submit" 
           disabled={isSubmitting}
@@ -129,13 +117,11 @@ const Register: React.FC = () => {
             <>Get Started <ArrowRight size={16} /></>
           )}
         </button>
-
         <div className="relative py-2 flex items-center">
            <div className="flex-1 border-t border-slate-100"></div>
            <span className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Or continue with</span>
            <div className="flex-1 border-t border-slate-100"></div>
         </div>
-
         <div className="space-y-3">
            <button 
              type="button" 
@@ -151,7 +137,6 @@ const Register: React.FC = () => {
               Sign up with Google
            </button>
         </div>
-
         <p className="text-center pt-4 text-xs font-bold text-slate-500">
           Already have an account? <Link to="/login" state={{ from }} className="text-indigo-600 hover:underline ml-1">Sign In</Link>
         </p>
@@ -159,5 +144,4 @@ const Register: React.FC = () => {
     </AuthLayout>
   );
 };
-
-export default Register;
+export default Register;

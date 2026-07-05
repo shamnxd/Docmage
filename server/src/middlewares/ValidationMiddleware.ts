@@ -1,6 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
 import { type ZodTypeAny, ZodError } from 'zod';
-
 export const validate = (schema: ZodTypeAny) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -3,14 +3,12 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Page } from 'react-pdf';
 import { CheckCircle2, GripVertical } from 'lucide-react';
-
 interface DraggablePageProps {
   id: string;
   originalIndex: number;
   isSelected: boolean;
   onToggle: () => void;
 }
-
 const DraggablePage: React.FC<DraggablePageProps> = ({ id, originalIndex, isSelected, onToggle }) => {
   const {
     attributes,
@@ -20,15 +18,12 @@ const DraggablePage: React.FC<DraggablePageProps> = ({ id, originalIndex, isSele
     transition,
     isDragging
   } = useSortable({ id });
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     zIndex: isDragging ? 50 : 0,
   };
-
   const [pageWidth, setPageWidth] = React.useState(window.innerWidth < 640 ? 140 : 180);
-
   React.useEffect(() => {
     const handleResize = () => {
       setPageWidth(window.innerWidth < 640 ? 140 : 180);
@@ -36,7 +31,6 @@ const DraggablePage: React.FC<DraggablePageProps> = ({ id, originalIndex, isSele
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
   return (
     <div 
       ref={setNodeRef} 
@@ -66,7 +60,6 @@ const DraggablePage: React.FC<DraggablePageProps> = ({ id, originalIndex, isSele
           <CheckCircle2 size={12} />
         </button>
       </div>
-
       <div 
         className="rounded-xl overflow-hidden bg-slate-50 flex justify-center border border-slate-100 cursor-pointer"
         onClick={onToggle}
@@ -79,7 +72,6 @@ const DraggablePage: React.FC<DraggablePageProps> = ({ id, originalIndex, isSele
           loading={<div className={`h-[${pageWidth * 1.4}px] w-[${pageWidth}px] flex items-center justify-center bg-slate-50 text-[10px] text-slate-300`}>Rendering...</div>}
         />
       </div>
-
       {isSelected && (
         <div className="absolute top-2 right-2 flex items-center justify-center pointer-events-none">
            <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg border-2 border-white scale-75">
@@ -90,5 +82,4 @@ const DraggablePage: React.FC<DraggablePageProps> = ({ id, originalIndex, isSele
     </div>
   );
 };
-
 export default DraggablePage;

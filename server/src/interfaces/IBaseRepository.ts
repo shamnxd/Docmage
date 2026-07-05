@@ -5,7 +5,6 @@ export interface PaginationResult<T> {
   limit: number;
   totalPages: number;
 }
-
 export interface IBaseRepository<T> {
   create(data: Partial<T>): Promise<T>;
   findById(id: string): Promise<T | null>;

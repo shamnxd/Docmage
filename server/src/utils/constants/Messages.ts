@@ -7,7 +7,6 @@ export const SuccessMessages = {
   LOGOUT_SUCCESS: 'Logged out successfully',
   PASSWORD_RESET_SENT: 'Password reset OTP sent successfully',
 } as const;
-
 export const ErrorMessages = {
   USER_EXISTS: 'User already exists',
   USER_NOT_FOUND: 'User not found',

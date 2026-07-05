@@ -2,11 +2,9 @@ import React, { useCallback } from 'react';
 import { Cloud, Plus } from 'lucide-react';
 import { useAppDispatch } from '../../store/hooks';
 import { setPdfFile, setGlobalFile } from '../../store/pdfSlice';
-
 const FileUpload: React.FC = () => {
   const dispatch = useAppDispatch();
   const [error, setError] = React.useState<string | null>(null);
-
   const handleFile = (file: File) => {
     setError(null);
     if (file.type !== 'application/pdf') {
@@ -16,20 +14,17 @@ const FileUpload: React.FC = () => {
     setGlobalFile(file);
     dispatch(setPdfFile({ name: file.name }));
   };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       handleFile(e.target.files[0]);
     }
   };
-
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFile(e.dataTransfer.files[0]);
     }
   }, [dispatch]);
-
   return (
     <div 
       className="relative group cursor-pointer"
@@ -54,11 +49,9 @@ const FileUpload: React.FC = () => {
         <p className="text-base text-slate-500 mb-6 max-w-sm mx-auto leading-relaxed">
           Drag and drop your file here, or click to browse from your computer.
         </p>
-        
         <div className="btn-primary py-3 px-10 inline-flex rounded-xl">
           <Plus size={18} strokeWidth={3} /> Choose PDF File
         </div>
-
         {error && (
           <div className="mt-6 flex items-center justify-center gap-2 animate-in fade-in slide-in-from-bottom-1 duration-200">
             <div className="w-1 h-1 rounded-full bg-red-500" />
@@ -69,5 +62,4 @@ const FileUpload: React.FC = () => {
     </div>
   );
 };
-
 export default FileUpload;

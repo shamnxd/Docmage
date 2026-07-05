@@ -1,9 +1,7 @@
 import mongoose from "mongoose";
 import { env } from "./Env";
 import { Logger } from "../utils/Logger";
-
 let cachedDbConnection: typeof mongoose | null = null;
-
 export const connectDB = async () => {
     if (cachedDbConnection) {
         return cachedDbConnection;
@@ -16,4 +14,4 @@ export const connectDB = async () => {
         Logger.error(`[Error]: MongoDB connection failed: ${error}`);
         throw error;
     }
-};
+};

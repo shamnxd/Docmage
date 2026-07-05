@@ -18,18 +18,13 @@ import { Document, pdfjs } from 'react-pdf';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { setPageOrder, setNumPages, togglePageSelection, getGlobalFile } from '../../store/pdfSlice';
 import DraggablePage from './DraggablePage';
-
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
-
-// Set up the worker
 pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
-
 const SortablePageGrid: React.FC = () => {
   const dispatch = useAppDispatch();
   const pdfState = useAppSelector((state) => state.pdf);
   const file = getGlobalFile();
   const { selectedPages, pageOrder } = pdfState;
-
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -40,23 +35,18 @@ const SortablePageGrid: React.FC = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-
     if (over && active.id !== over.id) {
       const oldIndex = pageOrder.findIndex(item => item.id === active.id);
       const newIndex = pageOrder.findIndex(item => item.id === over.id);
       dispatch(setPageOrder(arrayMove(pageOrder, oldIndex, newIndex)));
     }
   }
-
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     dispatch(setNumPages(numPages));
   }
-
   if (!file) return null;
-
   return (
     <div className="mt-12">
       <Document
@@ -96,5 +86,4 @@ const SortablePageGrid: React.FC = () => {
     </div>
   );
 };
-
 export default SortablePageGrid;

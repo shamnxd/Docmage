@@ -7,20 +7,17 @@ import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { resetPdf, getGlobalFile } from '../store/pdfSlice';
 import { Sparkles, FileText, Layout } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const pdfState = useAppSelector((state) => state.pdf);
   const file = getGlobalFile();
   const { numPages, selectedPages } = pdfState;
-
   const handleReset = () => {
     dispatch(resetPdf());
   };
-
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Background Layer */}
+      {}
       <div className="absolute inset-0 bg-slate-50 -z-20" />
       <svg 
         className="absolute inset-0 w-full h-full -z-10" 
@@ -37,9 +34,7 @@ const Home: React.FC = () => {
           <path stroke="#E2E8F0" strokeOpacity="1" strokeWidth="1" d="M-15.227 573.66H1439.7M-15.227 164.029H1439.7" />
           <circle cx="782.595" cy="411.166" r="308.334" stroke="#E2E8F0" strokeOpacity="1" strokeWidth="1" />
       </svg>
-      
       <Navbar />
-      
       <main className="container-custom min-h-screen flex items-center py-20">
         <AnimatePresence mode="wait">
           {!file ? (
@@ -66,14 +61,12 @@ const Home: React.FC = () => {
                 <p className="text-lg text-slate-500 max-w-xl leading-relaxed mb-10">
                   The ultimate workspace to extract, rearrange, and optimize your PDF pages. Just drag, drop, and export your professional documents in seconds.
                 </p>
-                
                 <div className="flex flex-col sm:flex-row gap-6 text-slate-400">
                   <div className="flex items-center gap-2 font-bold text-sm"><div className="w-8 h-8 bg-white rounded-md shadow-sm flex items-center justify-center text-indigo-600"><FileText size={16} /></div> No limits</div>
                   <div className="flex items-center gap-2 font-bold text-sm"><div className="w-8 h-8 bg-white rounded-md shadow-sm flex items-center justify-center text-indigo-600"><Layout size={16} /></div> Drag & Drop</div>
                   <div className="flex items-center gap-2 font-bold text-sm"><div className="w-8 h-8 bg-white rounded-md shadow-sm flex items-center justify-center text-indigo-600"><Sparkles size={16} /></div> 100% Free</div>
                 </div>
               </div>
-
               <div className="flex-1 w-full max-w-xl">
                 <div className="relative group">
                    <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
@@ -100,7 +93,6 @@ const Home: React.FC = () => {
                     {file?.name}
                   </h1>
                 </div>
-                
                 <div className="flex items-center gap-6">
                   <div className="text-right">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total Pages</p>
@@ -113,7 +105,6 @@ const Home: React.FC = () => {
                   </div>
                 </div>
               </div>
-
               <div className="bg-slate-100/50 rounded-xl p-4 md:p-10 border border-slate-200/50 min-h-[500px]">
                  <div className="mb-6 flex justify-between items-center">
                     <h2 className="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Editor Canvas</h2>
@@ -123,7 +114,6 @@ const Home: React.FC = () => {
                  </div>
                  <SortablePageGrid />
               </div>
-              
               <SelectionBar />
             </motion.div>
           )}
@@ -132,5 +122,4 @@ const Home: React.FC = () => {
     </div>
   );
 };
-
 export default Home;

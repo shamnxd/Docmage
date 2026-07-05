@@ -1,6 +1,3 @@
-/**
- * Email template for account verification OTP.
- */
 export function getOtpTemplate(otp: string): string {
   return `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px;">
@@ -15,10 +12,6 @@ export function getOtpTemplate(otp: string): string {
     </div>
   `;
 }
-
-/**
- * Email template for resetting password link.
- */
 export function getPasswordResetTemplate(resetUrl: string): string {
   return `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px;">

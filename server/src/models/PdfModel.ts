@@ -1,6 +1,5 @@
 import type { Document } from 'mongoose';
 import { Schema, model } from 'mongoose';
-
 export interface IPdf extends Document {
   id: string;
   userId: string;
@@ -11,7 +10,6 @@ export interface IPdf extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
-
 const pdfSchema = new Schema<IPdf>(
   {
     userId: { 
@@ -38,6 +36,5 @@ const pdfSchema = new Schema<IPdf>(
   },
   { timestamps: true }
 );
-
 const PdfModel = model<IPdf>('Pdf', pdfSchema);
 export default PdfModel;

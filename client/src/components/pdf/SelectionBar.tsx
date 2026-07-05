@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { Download, X, Loader2, Sparkles, FileEdit } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { clearSelection, setIsProcessing, getGlobalFile } from '../../store/pdfSlice';
-import { pdfService } from '../../services/pdfService';
+import { pdfApi } from '../../api/pdfApi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import type { AxiosError } from 'axios';
-
 const SelectionBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const pdfState = useAppSelector((state) => state.pdf);
@@ -17,13 +16,10 @@ const SelectionBar: React.FC = () => {
   const isAuthenticated = !!user;
   const navigate = useNavigate();
   const location = useLocation();
-  
   const [newFileName, setNewFileName] = useState('');
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   if (selectedPages.length === 0 || !file) return null;
-
   const handleExport = async () => {
     setError(null);
     if (!isAuthenticated) {
@@ -31,40 +27,28 @@ const SelectionBar: React.FC = () => {
       navigate('/login', { state: { from: location.pathname } });
       return;
     }
-
     if (!showDownloadModal) {
       setShowDownloadModal(true);
       return;
     }
-
     if (!newFileName) {
       setError('Please enter a file name');
       return;
     }
-
     try {
       dispatch(setIsProcessing(true));
       const loadingToast = toast.loading('Preparing your PDF...');
-
-      // 1. Upload the PDF first
-      const uploadResult = await pdfService.upload(file);
+      const uploadResult = await pdfApi.upload(file);
       const pdfId = uploadResult.data.id;
-
-      // 2. Prepare the page indices in the current UI order
       const pageIndicesToExtract = pageOrder
         .filter(item => selectedPages.includes(item.originalIndex))
         .map(item => item.originalIndex - 1);
-
-      // 3. Request extraction
-      const extractionResult = await pdfService.extract(pdfId, pageIndicesToExtract, newFileName);
+      const extractionResult = await pdfApi.extract(pdfId, pageIndicesToExtract, newFileName);
       const newPdfId = extractionResult.data.id;
-
       toast.dismiss(loadingToast);
       toast.success('PDF extracted successfully!', { duration: 5000 });
       setShowDownloadModal(false);
       setNewFileName('');
-      
-      // Clear PDF state and navigate to success page
       dispatch(clearSelection());
       navigate('/success', { 
         state: { 
@@ -76,15 +60,14 @@ const SelectionBar: React.FC = () => {
       const axiosError = err as AxiosError<{ message: string }>;
       console.error('Export failed:', axiosError);
       setError(axiosError.response?.data?.message || 'Failed to export PDF');
-      toast.dismiss(); // Dismiss the loading toast if error
+      toast.dismiss(); 
     } finally {
       dispatch(setIsProcessing(false));
     }
   };
-
   return (
     <AnimatePresence>
-      {/* Download Name Modal */}
+      {}
       {showDownloadModal && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
           <motion.div 
@@ -104,10 +87,8 @@ const SelectionBar: React.FC = () => {
               <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-md flex items-center justify-center mb-4 mx-auto">
                 <FileEdit size={20} />
               </div>
-              
               <h3 className="text-base font-bold text-slate-900 mb-1">Name your PDF</h3>
               <p className="text-xs text-slate-500 font-medium mb-6">Enter a filename for your extraction.</p>
-              
               <div className="space-y-4">
                 <div className="relative group">
                   <input 
@@ -121,14 +102,12 @@ const SelectionBar: React.FC = () => {
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[10px]">.pdf</div>
                 </div>
-
                 {error && (
                   <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
                     <div className="w-1 h-1 rounded-full bg-red-500" />
                     <p className="text-[10px] font-bold text-red-500 leading-tight">{error}</p>
                   </div>
                 )}
-
                 <div className="flex gap-2">
                   <button 
                     onClick={() => setShowDownloadModal(false)}
@@ -153,7 +132,6 @@ const SelectionBar: React.FC = () => {
           </motion.div>
         </div>
       )}
-
       <motion.div 
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -178,7 +156,6 @@ const SelectionBar: React.FC = () => {
                 </p>
               </div>
             </div>
-            
             <div className="flex gap-2 md:gap-3">
               <button 
                 className="hidden sm:flex btn-ghost text-slate-400 hover:text-white px-3 md:px-4 py-2" 
@@ -209,5 +186,4 @@ const SelectionBar: React.FC = () => {
     </AnimatePresence>
   );
 };
-
-export default SelectionBar;
+export default SelectionBar;

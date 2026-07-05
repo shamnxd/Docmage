@@ -8,38 +8,30 @@ import { useAppDispatch } from '../store/hooks';
 import { setCredentials } from '../store/authSlice';
 import AuthLayout from '../components/auth/AuthLayout';
 import { useGoogleLogin } from '@react-oauth/google';
-
 import type { AxiosError } from 'axios';
-import { authService } from '../services/authService';
-
+import { authApi } from '../api/authApi';
 import { loginSchema, type LoginForm } from '../utils/validation/authSchemas';
-
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || '/dashboard';
-  
   const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
-
   const onSubmit = async (data: LoginForm) => {
     try {
-      const response = await authService.login(data);
+      const response = await authApi.login(data);
       dispatch(setCredentials({ accessToken: response.accessToken, user: response.user }));
       navigate(from, { replace: true });
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message: string }>;
       console.error('Login failed:', axiosError);
       const message = axiosError.response?.data?.message || 'Login failed. Please check your credentials.';
-      
       if (message === 'Account not verified. Please verify your email.') {
         navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`);
         return;
       }
-      
-      // Map backend errors to fields
       const lowerMessage = message.toLowerCase();
       if (lowerMessage.includes('email') || lowerMessage.includes('user not found')) {
         setError('email', { type: 'manual', message });
@@ -50,11 +42,10 @@ const Login: React.FC = () => {
       }
     }
   };
-
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const response = await authService.googleLogin(tokenResponse.access_token);
+        const response = await authApi.googleLogin(tokenResponse.access_token);
         dispatch(setCredentials({ accessToken: response.accessToken, user: response.user }));
         toast.success('Login successful!');
         navigate(from, { replace: true });
@@ -68,7 +59,6 @@ const Login: React.FC = () => {
       toast.error('Google login failed.');
     },
   });
-
   return (
     <AuthLayout 
       title="Welcome Back" 
@@ -88,7 +78,6 @@ const Login: React.FC = () => {
           </div>
           {errors.email && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.email.message}</p>}
         </div>
-
         <div className="space-y-1.5">
           <div className="flex justify-between items-center px-1">
             <label className="text-xs font-bold text-slate-700">Password</label>
@@ -106,14 +95,12 @@ const Login: React.FC = () => {
           </div>
           {errors.password && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.password.message}</p>}
         </div>
-
         {errors.root && (
           <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
             <div className="w-1 h-1 rounded-full bg-red-500" />
             <p className="text-[10px] font-bold text-red-500 leading-tight">{errors.root.message}</p>
           </div>
         )}
-
         <button 
           type="submit" 
           disabled={isSubmitting}
@@ -125,13 +112,11 @@ const Login: React.FC = () => {
             <>Sign In <ArrowRight size={16} /></>
           )}
         </button>
-
         <div className="relative py-2 flex items-center">
            <div className="flex-1 border-t border-slate-100"></div>
            <span className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Or continue with</span>
            <div className="flex-1 border-t border-slate-100"></div>
         </div>
-
         <div className="space-y-3">
            <button 
              type="button" 
@@ -147,7 +132,6 @@ const Login: React.FC = () => {
               Sign in with Google
            </button>
         </div>
-
         <p className="text-center pt-4 text-xs font-bold text-slate-500">
           New to DocMage? <Link to="/register" state={{ from }} className="text-indigo-600 hover:underline ml-1">Create an account</Link>
         </p>
@@ -155,5 +139,4 @@ const Login: React.FC = () => {
     </AuthLayout>
   );
 };
-
-export default Login;
+export default Login;

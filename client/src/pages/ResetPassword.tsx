@@ -5,28 +5,23 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import AuthLayout from '../components/auth/AuthLayout';
-import { authService } from '../services/authService';
+import { authApi } from '../api/authApi';
 import type { AxiosError } from 'axios';
-
 import { resetPasswordSchema, type ResetPasswordForm } from '../utils/validation/authSchemas';
-
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
-
   const { register, handleSubmit, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm<ResetPasswordForm>({
     resolver: zodResolver(resetPasswordSchema),
   });
-
   const onSubmit = async (data: ResetPasswordForm) => {
     if (!token) {
       toast.error('Invalid or missing token.');
       return;
     }
-
     try {
-      await authService.resetPassword({ token, password: data.password });
+      await authApi.resetPassword({ token, password: data.password });
       toast.success('Password reset successful! You can now log in.');
       setTimeout(() => navigate('/login'), 3000);
     } catch (error: unknown) {
@@ -40,7 +35,6 @@ const ResetPassword: React.FC = () => {
       }
     }
   };
-
   if (!token) {
     return (
       <AuthLayout 
@@ -59,7 +53,6 @@ const ResetPassword: React.FC = () => {
       </AuthLayout>
     );
   }
-
   if (isSubmitSuccessful) {
     return (
       <AuthLayout 
@@ -83,7 +76,6 @@ const ResetPassword: React.FC = () => {
       </AuthLayout>
     );
   }
-
   return (
     <AuthLayout 
       title="Reset Password" 
@@ -103,7 +95,6 @@ const ResetPassword: React.FC = () => {
           </div>
           {errors.password && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.password.message}</p>}
         </div>
-
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-slate-700 ml-1">Confirm New Password</label>
           <div className="relative group">
@@ -117,14 +108,12 @@ const ResetPassword: React.FC = () => {
           </div>
           {errors.confirmPassword && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.confirmPassword.message}</p>}
         </div>
-
         {errors.root && (
           <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
             <div className="w-1 h-1 rounded-full bg-red-500" />
             <p className="text-[10px] font-bold text-red-500 leading-tight">{errors.root.message}</p>
           </div>
         )}
-
         <button 
           type="submit" 
           disabled={isSubmitting}
@@ -140,5 +129,4 @@ const ResetPassword: React.FC = () => {
     </AuthLayout>
   );
 };
-
-export default ResetPassword;
+export default ResetPassword;

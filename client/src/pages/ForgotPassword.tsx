@@ -5,19 +5,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import AuthLayout from '../components/auth/AuthLayout';
-import { authService } from '../services/authService';
+import { authApi } from '../api/authApi';
 import type { AxiosError } from 'axios';
-
 import { forgotPasswordSchema, type ForgotPasswordForm } from '../utils/validation/authSchemas';
-
 const ForgotPassword: React.FC = () => {
   const { register, handleSubmit, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm<ForgotPasswordForm>({
     resolver: zodResolver(forgotPasswordSchema),
   });
-
   const onSubmit = async (data: ForgotPasswordForm) => {
     try {
-      await authService.forgotPassword(data.email);
+      await authApi.forgotPassword(data.email);
       toast.success('Password reset link sent to your email.');
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message: string }>;
@@ -30,7 +27,6 @@ const ForgotPassword: React.FC = () => {
       }
     }
   };
-
   if (isSubmitSuccessful) {
     return (
       <AuthLayout 
@@ -54,7 +50,6 @@ const ForgotPassword: React.FC = () => {
       </AuthLayout>
     );
   }
-
   return (
     <AuthLayout 
       title="Forgot Password?" 
@@ -74,14 +69,12 @@ const ForgotPassword: React.FC = () => {
           </div>
           {errors.email && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.email.message}</p>}
         </div>
-
         {errors.root && (
           <div className="flex items-center gap-2 px-1 py-1 animate-in fade-in slide-in-from-top-1 duration-200">
             <div className="w-1 h-1 rounded-full bg-red-500" />
             <p className="text-[10px] font-bold text-red-500 leading-tight">{errors.root.message}</p>
           </div>
         )}
-
         <button 
           type="submit" 
           disabled={isSubmitting}
@@ -93,7 +86,6 @@ const ForgotPassword: React.FC = () => {
             <>Send Reset Link <Send size={16} /></>
           )}
         </button>
-
         <p className="text-center pt-4 text-xs font-bold text-slate-500">
           Remember your password? <Link to="/login" className="text-indigo-600 hover:underline ml-1">Sign In</Link>
         </p>
@@ -101,5 +93,4 @@ const ForgotPassword: React.FC = () => {
     </AuthLayout>
   );
 };
-
-export default ForgotPassword;
+export default ForgotPassword;
