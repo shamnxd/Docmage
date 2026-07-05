@@ -6,17 +6,14 @@ import { ErrorMessages, SuccessMessages } from '../utils/constants/Messages';
 import { AppError } from '../utils/errors/AppError';
 import type { AuthRequest } from '../middlewares/AuthMiddleware';
 import type { PaginationQuery } from '../dtos/PaginationDto';
-
 export class PdfController {
-  constructor(private readonly pdfService: IPdfService) { }
-
+  constructor(private readonly _pdfService: IPdfService) { }
   public upload = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       if (!req.file) {
         throw new AppError(ErrorMessages.NO_FILE_UPLOADED, HttpStatus.BAD_REQUEST);
       }
-
-      const pdf = await this.pdfService.uploadPdf(req.user!.userId, req.file);
+      const pdf = await this._pdfService.uploadPdf(req.user!.userId, req.file);
       res.status(HttpStatus.CREATED).json({
         status: 'success',
         message: SuccessMessages.PDF_UPLOADED,
@@ -26,12 +23,10 @@ export class PdfController {
       next(error);
     }
   };
-
   public list = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const query = req.query as unknown as PaginationQuery;
-      const result = await this.pdfService.getUserPdfs(req.user!.userId, query);
-
+      const result = await this._pdfService.getUserPdfs(req.user!.userId, query);
       res.status(HttpStatus.OK).json({
         status: 'success',
         data: {
@@ -46,11 +41,10 @@ export class PdfController {
       next(error);
     }
   };
-
   public delete = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id as string;
-      await this.pdfService.deletePdf(req.user!.userId, id);
+      await this._pdfService.deletePdf(req.user!.userId, id);
       res.status(HttpStatus.OK).json({
         status: 'success',
         message: SuccessMessages.PDF_DELETED,
@@ -59,22 +53,17 @@ export class PdfController {
       next(error);
     }
   };
-
   public extract = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id as string;
       const { pageIndices, newFileName } = req.body;
-
       if (!Array.isArray(pageIndices) || pageIndices.length === 0) {
         throw new AppError(ErrorMessages.INVALID_PAGE_INDICES, HttpStatus.BAD_REQUEST);
       }
-      
       if (!newFileName) {
         throw new AppError("New file name is required", HttpStatus.BAD_REQUEST);
       }
-
-      const newPdf = await this.pdfService.extractPages(req.user!.userId, id, pageIndices, newFileName);
-
+      const newPdf = await this._pdfService.extractPages(req.user!.userId, id, pageIndices, newFileName);
       res.status(HttpStatus.OK).json({
         status: 'success',
         message: 'PDF extracted and saved successfully',
@@ -84,12 +73,10 @@ export class PdfController {
       next(error);
     }
   };
-
   public download = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id as string;
-      const { buffer, fileName } = await this.pdfService.getPdfBuffer(id);
-
+      const { buffer, fileName } = await this._pdfService.getPdfBuffer(id);
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
       res.status(HttpStatus.OK).send(buffer);
@@ -97,4 +84,4 @@ export class PdfController {
       next(error);
     }
   };
-}
+}
