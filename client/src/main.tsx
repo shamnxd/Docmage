@@ -6,11 +6,9 @@ import { store } from './store/store';
 import { setCredentials, setInitialized, clearCredentials } from './store/authSlice';
 import './styles/global.css';
 import App from './App.tsx';
-import { refreshApi } from './services/api';
-
+import { refreshApi } from './api/index';
+import { API_ROUTES } from './constants/apiRoutes';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
-
 function AppWithInit() {
   useEffect(() => {
     const silentRefresh = async () => {
@@ -18,7 +16,7 @@ function AppWithInit() {
         const { data } = await refreshApi.post<{ 
           accessToken: string; 
           user: { id: string; email: string; name?: string } 
-        }>('/auth/refresh');
+        }>(API_ROUTES.AUTH.REFRESH);
         store.dispatch(setCredentials({
           accessToken: data.accessToken,
           user: data.user
@@ -29,13 +27,10 @@ function AppWithInit() {
         store.dispatch(setInitialized());
       }
     };
-
     silentRefresh();
   }, []);
-
   return <App />;
 }
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
@@ -44,4 +39,4 @@ createRoot(document.getElementById('root')!).render(
       </GoogleOAuthProvider>
     </Provider>
   </StrictMode>
-);
+);

@@ -4,10 +4,9 @@ import { useAppDispatch } from '../store/hooks';
 import { setPdfFile, setGlobalFile } from '../store/pdfSlice';
 import { FileText, Download, Trash2, Search, Plus, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { pdfService } from '../services/pdfService';
+import { pdfApi } from '../api/pdfApi';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-
 import { useNavigate } from 'react-router-dom';
 const Dashboard: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,27 +16,20 @@ const Dashboard: React.FC = () => {
   const [stats, setStats] = React.useState({ total: 0, count: 0, monthlyUsage: 0 });
   const [isDownloading, setIsDownloading] = React.useState<string | null>(null);
   const [isOpening, setIsOpening] = React.useState<string | null>(null);
-
-  // Search state
   const [searchTerm, setSearchTerm] = React.useState('');
   const [debouncedSearch, setDebouncedSearch] = React.useState('');
-
-  // Delete modal state
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [pdfToDelete, setPdfToDelete] = React.useState<{ id: string, name: string } | null>(null);
-
-  // Debounce search term
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchTerm);
     }, 500);
     return () => clearTimeout(timer);
   }, [searchTerm]);
-
   const fetchPdfs = async (search?: string) => {
     try {
       setLoading(true);
-      const response = await pdfService.list({ search });
+      const response = await pdfApi.list({ search });
       setPdfs(response.data.pdfs);
       setStats({
         total: response.data.pagination.total,
@@ -51,17 +43,14 @@ const Dashboard: React.FC = () => {
       setLoading(false);
     }
   };
-
-  // Re-fetch when debounced search changes
   React.useEffect(() => {
     fetchPdfs(debouncedSearch);
   }, [debouncedSearch]);
-
   const handleDirectDownload = async (e: React.MouseEvent, id: string, name: string) => {
     e.stopPropagation();
     try {
       setIsDownloading(id);
-      const blob = await pdfService.download(id);
+      const blob = await pdfApi.download(id);
       const url = window.URL.createObjectURL(new Blob([blob]));
       const link = document.createElement('a');
       link.href = url;
@@ -77,12 +66,11 @@ const Dashboard: React.FC = () => {
       setIsDownloading(null);
     }
   };
-
   const handleEditFile = async (id: string, name: string) => {
     try {
       setIsOpening(id);
       const loadingToast = toast.loading('Loading document...');
-      const blob = await pdfService.download(id);
+      const blob = await pdfApi.download(id);
       const file = new File([blob], name, { type: 'application/pdf' });
       setGlobalFile(file);
       dispatch(setPdfFile({ name: file.name }));
@@ -94,13 +82,11 @@ const Dashboard: React.FC = () => {
       setIsOpening(null);
     }
   };
-
   const confirmDelete = async () => {
     if (!pdfToDelete) return;
-
     try {
       setIsSubmitting(true);
-      await pdfService.delete(pdfToDelete.id);
+      await pdfApi.delete(pdfToDelete.id);
       toast.success('Document deleted');
       setShowDeleteModal(false);
       setPdfToDelete(null);
@@ -111,15 +97,12 @@ const Dashboard: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
   const handleDeleteClick = (e: React.MouseEvent, id: string, name: string) => {
     e.stopPropagation();
     setPdfToDelete({ id, name });
     setShowDeleteModal(true);
   };
-
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
   const formatSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -127,7 +110,6 @@ const Dashboard: React.FC = () => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -136,10 +118,9 @@ const Dashboard: React.FC = () => {
       year: 'numeric'
     });
   };
-
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Background Layer */}
+      {}
       <div className="absolute inset-0 bg-slate-50 -z-20" />
       <svg
         className="absolute inset-0 w-full h-full -z-10"
@@ -156,21 +137,17 @@ const Dashboard: React.FC = () => {
         <path stroke="#E2E8F0" strokeOpacity="1" strokeWidth="1" d="M-15.227 573.66H1439.7M-15.227 164.029H1439.7" />
         <circle cx="782.595" cy="411.166" r="308.334" stroke="#E2E8F0" strokeOpacity="1" strokeWidth="1" />
       </svg>
-
       <Navbar />
-
       <main className="container-custom pt-24 pb-16 relative z-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
             <h1 className="text-2xl font-black text-slate-900 mb-1">My Documents</h1>
             <p className="text-slate-500 font-medium text-sm">Manage and organize your PDF workspace.</p>
           </div>
-
           <Link to="/" className="btn-primary py-2.5">
             <Plus size={16} /> New Extraction
           </Link>
         </div>
-
         <div className="bg-white/50 backdrop-blur-sm border border-slate-200 rounded-md overflow-hidden shadow-xl shadow-slate-200/50">
           <div className="p-5 border-b border-slate-200 bg-white/80 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -188,7 +165,6 @@ const Dashboard: React.FC = () => {
               />
             </div>
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -274,8 +250,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </main>
-
-      {/* Delete Confirmation Modal */}
+      {}
       <AnimatePresence>
         {showDeleteModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
@@ -296,12 +271,10 @@ const Dashboard: React.FC = () => {
                 <div className="w-10 h-10 bg-red-50 text-red-600 rounded-md flex items-center justify-center mb-4 mx-auto">
                   <Trash2 size={20} />
                 </div>
-
                 <h3 className="text-base font-bold text-slate-900 mb-1">Delete document?</h3>
                 <p className="text-xs text-slate-500 font-medium mb-6 leading-relaxed">
                   Are you sure you want to delete <span className="text-slate-900">"{pdfToDelete?.name}"</span>?
                 </p>
-
                 <div className="flex gap-2">
                   <button
                     onClick={() => setShowDeleteModal(false)}
@@ -329,5 +302,4 @@ const Dashboard: React.FC = () => {
     </div>
   );
 };
-
-export default Dashboard;
+export default Dashboard;

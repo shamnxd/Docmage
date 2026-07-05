@@ -4,19 +4,16 @@ import { Menu, X, ChevronRight, FileText, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { clearCredentials } from '../../store/authSlice';
-import { authService } from '../../services/authService';
-
+import { authApi } from '../../api/authApi';
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const isAuthenticated = !!user;
-
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const handleLogout = async () => {
     try {
-      await authService.logout();
+      await authApi.logout();
     } catch (err) {
       console.error('Logout failed:', err);
     } finally {
@@ -24,7 +21,6 @@ const Navbar: React.FC = () => {
       setIsMobileMenuOpen(false);
     }
   };
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -32,7 +28,6 @@ const Navbar: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
   return (
     <nav 
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
@@ -42,15 +37,14 @@ const Navbar: React.FC = () => {
       }`}
     >
       <div className="container-custom flex justify-between items-center">
-        {/* Logo */}
+        {}
         <Link to="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 bg-indigo-600 rounded-md flex items-center justify-center shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
             <FileText size={18} color="white" strokeWidth={2.5} />
           </div>
           <span className="text-lg font-black text-slate-900 tracking-tight">DocMage</span>
         </Link>
-
-        {/* Actions */}
+        {}
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
             <div className="hidden md:flex items-center gap-4">
@@ -80,8 +74,7 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
           )}
-
-          {/* Mobile Toggle */}
+          {}
           <button 
             className="md:hidden p-2 text-slate-900 bg-slate-50 rounded-md"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -90,8 +83,7 @@ const Navbar: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {/* Mobile Menu */}
+      {}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div 
@@ -119,5 +111,4 @@ const Navbar: React.FC = () => {
     </nav>
   );
 };
-
-export default Navbar;
+export default Navbar;

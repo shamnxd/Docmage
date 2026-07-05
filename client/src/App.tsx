@@ -10,8 +10,6 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ExtractionSuccess from './pages/ExtractionSuccess';
 import { Toaster } from 'react-hot-toast';
-
-// ─── Loading screen while silent refresh runs ─────────────────────────────────
 const AppLoader: React.FC = () => (
   <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
     <div className="flex flex-col items-center gap-4">
@@ -20,8 +18,6 @@ const AppLoader: React.FC = () => (
     </div>
   </div>
 );
-
-// ─── Protected Route ──────────────────────────────────────────────────────────
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const user = useAppSelector((state) => state.auth.user);
   const location = useLocation();
@@ -29,13 +25,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     ? <>{children}</>
     : <Navigate to="/login" state={{ from: location.pathname }} replace />;
 };
-
-// ─── App routes ───────────────────────────────────────────────────────────────
 function AppContent() {
   const isInitialized = useAppSelector((state) => state.auth.isInitialized);
-
   if (!isInitialized) return <AppLoader />;
-
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
@@ -66,8 +58,6 @@ function AppContent() {
     </>
   );
 }
-
-// ─── Root app ─────────────────────────────────────────────────────────────────
 function App() {
   return (
     <Router>
@@ -75,5 +65,4 @@ function App() {
     </Router>
   );
 }
-
 export default App;
